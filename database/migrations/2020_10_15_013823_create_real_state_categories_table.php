@@ -14,7 +14,7 @@ class CreateRealStateCategoriesTable extends Migration
     public function up()
     {
         Schema::create('real_state_categories', function (Blueprint $table) {
-            $table->foreignId('real_state_id')->constrained('real_state');
+            $table->foreignId('real_state_id')->constrained('real_states');
             $table->foreignId('category_id')->constrained('categories');
         });
     }

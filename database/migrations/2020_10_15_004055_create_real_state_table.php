@@ -13,7 +13,7 @@ class CreateRealStateTable extends Migration
      */
     public function up()
     {
-        Schema::create('real_state', function (Blueprint $table) {
+        Schema::create('real_states', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users');
             $table->string('type');
