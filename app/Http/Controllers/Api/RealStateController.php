@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Api\ApiMessages;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\RealStateRequest;
 use App\Models\RealState;
-use Illuminate\Http\Request;
 
 class RealStateController extends Controller
 {
@@ -33,7 +34,7 @@ class RealStateController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function store(Request $request)
+    public function store(RealStateRequest $request)
     {
         $data = $request->all();
         try {
@@ -43,7 +44,8 @@ class RealStateController extends Controller
                 "data" => $realState
             ], 200);
         } catch (\exception $e) {
-            return response()->json(["error"=> $e->getMessage()], 400);
+            $message = new ApiMessages($e->getMessage());
+            return response()->json($message->getMessage(), 400);
         }
     }
 
@@ -61,7 +63,8 @@ class RealStateController extends Controller
                 "data" => $realState
             ], 200);
         } catch (\exception $e) {
-            return response()->json(["error"=> $e->getMessage()], 400);
+            $message = new ApiMessages($e->getMessage());
+            return response()->json($message->getMessage(), 400);
         }
     }
 
@@ -71,7 +74,7 @@ class RealStateController extends Controller
      * @param  \App\Models\RealState  $realState
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update($id, Request $request)
+    public function update($id, RealStateRequest $request)
     {
         $data = $request->all();
         try {
@@ -82,7 +85,8 @@ class RealStateController extends Controller
                 "data"    => $realState
             ], 200);
         } catch (\exception $e) {
-            return response()->json(["error"=> $e->getMessage()], 400);
+            $message = new ApiMessages($e->getMessage());
+            return response()->json($message->getMessage(), 400);
         }
     }
 
@@ -101,7 +105,8 @@ class RealStateController extends Controller
                 "message" => "Imóvel excluído com sucesso",
             ], 200);
         } catch (\exception $e) {
-            return response()->json(["error"=> $e->getMessage()], 400);
+            $message = new ApiMessages($e->getMessage());
+            return response()->json($message->getMessage(), 400);
         }
     }
 }
