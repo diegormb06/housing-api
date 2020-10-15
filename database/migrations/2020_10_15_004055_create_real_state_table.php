@@ -16,7 +16,7 @@ class CreateRealStateTable extends Migration
         Schema::create('real_states', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users');
-            $table->string('type');
+            $table->string('title');
             $table->string('description');
             $table->text('content');
             $table->float('price', 10, 2);

@@ -22,7 +22,5 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::prefix('v1')->group(function () {
-    Route::prefix('real-states')->name('real_states.')->group(function () {
-        Route::get('/', [RealStateController::class, 'index']);
-    });
+    Route::resource('real-states', RealStateController::class);
 });
