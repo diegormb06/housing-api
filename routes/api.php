@@ -1,8 +1,7 @@
 <?php
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\Api\CategoryController;
 use Illuminate\Support\Facades\Route;
-
 use App\Http\Controllers\Api\RealStateController;
 use App\Http\Controllers\Api\UserController;
 
@@ -18,11 +17,9 @@ use App\Http\Controllers\Api\UserController;
 |
 */
 
-//Route::middleware('auth:api')->get('/user', function (Request $request) {
-//    return $request->user();
-//});
 
 Route::prefix('v1')->group(function () {
     Route::resource('real-states', RealStateController::class);
     Route::resource('users', UserController::class);
+    Route::resource('category', CategoryController::class);
 });
