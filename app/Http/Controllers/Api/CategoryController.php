@@ -94,14 +94,23 @@ class CategoryController extends Controller
         }
     }
 
+
     /**
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function destroy($id)
     {
-        //
+        try {
+            $category = $this->category->findOrFail($id);
+            $category->delete();
+
+            return response()->json(["message" => "Category deleted"], 200);
+        } catch (\exception $e) {
+            $message = new ApiMessages($e->getMessage());
+            return response()->json($message->getMessage(), 400);
+        }
     }
 }
