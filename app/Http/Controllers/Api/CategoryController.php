@@ -46,7 +46,7 @@ class CategoryController extends Controller
                 "message" => "Category created!",
                 "data" => $newCategory
             ], 200);
-        } catch (\Exeption $e) {
+        } catch (\exception $e) {
             return response()->json($e->getMessage());
         }
     }
