@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Api;
 
 use App\Api\ApiMessages;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CategoryRequest;
 use App\Models\Category;
-use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
+use \exception;
 
 class CategoryController extends Controller
 {
@@ -22,7 +24,7 @@ class CategoryController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function index()
     {
@@ -33,20 +35,20 @@ class CategoryController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
+     * @param  CategoryRequest  $request
+     * @return JsonResponse
      */
-    public function store(Request $request)
+    public function store(CategoryRequest $request)
     {
         $data = $request->all();
 
         try{
             $newCategory = $this->category->create($data);
             return response()->json([
-                "message" => "Category created!",
+                "message" => "Category created",
                 "data" => $newCategory
             ], 200);
-        } catch (\exception $e) {
+        } catch (exception $e) {
             return response()->json($e->getMessage());
         }
     }
@@ -55,14 +57,14 @@ class CategoryController extends Controller
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
-    public function show($id)
+    public function show(int $id)
     {
         try {
             $category = $this->category->findOrFail($id);
             return response()->json($category,200);
-        } catch (\exception $e) {
+        } catch (exception $e) {
             $message = new ApiMessages($e->getMessage());
             return response()->json($message->getMessage(), 400);
         }
@@ -72,11 +74,11 @@ class CategoryController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  CategoryRequest  $request
      * @param  int  $id
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
-    public function update(Request $request, $id)
+    public function update(CategoryRequest $request, int $id)
     {
         $data = $request->all();
 
@@ -88,7 +90,7 @@ class CategoryController extends Controller
                 "message" => "Category updated!",
                 "data" => $category
             ], 200);
-        } catch (\exception $e) {
+        } catch (exception $e) {
             $message = new ApiMessages($e->getMessage());
             return response()->json($message->getMessage(), 400);
         }
@@ -99,16 +101,16 @@ class CategoryController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
-    public function destroy($id)
+    public function destroy(int $id)
     {
         try {
             $category = $this->category->findOrFail($id);
             $category->delete();
 
             return response()->json(["message" => "Category deleted"], 200);
-        } catch (\exception $e) {
+        } catch (exception $e) {
             $message = new ApiMessages($e->getMessage());
             return response()->json($message->getMessage(), 400);
         }

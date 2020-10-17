@@ -31,17 +31,23 @@ class RealStateController extends Controller
 
     /**
      * Store a newly created resource in storage.
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function store(RealStateRequest $request)
     {
         $data = $request->all();
+
         try {
             $realState = $this->realState->create($data);
+
+            if (isset($data['categories']) && count($data['categories'])) {
+                $realState->categories()->sync($data['categories']);
+            }
+
             return response()->json([
                 "message" => "Imóvel cadastrado com sucesso",
-                "data" => $realState
+                "data"    => $realState
             ], 200);
         } catch (\exception $e) {
             $message = new ApiMessages($e->getMessage());
@@ -51,7 +57,7 @@ class RealStateController extends Controller
 
     /**
      * Display the specified resource.
-     * @param  \App\Models\RealState  $realState
+     * @param \App\Models\RealState $realState
      * @return \Illuminate\Http\JsonResponse
      */
     public function show($id)
@@ -70,8 +76,8 @@ class RealStateController extends Controller
 
     /**
      * Update the specified resource in storage.
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\RealState  $realState
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Models\RealState $realState
      * @return \Illuminate\Http\JsonResponse
      */
     public function update($id, RealStateRequest $request)
@@ -80,6 +86,11 @@ class RealStateController extends Controller
         try {
             $realState = $this->realState->findOrFail($id);
             $realState->update($data);
+
+            if (isset($data['categories']) && count($data['categories'])) {
+                $realState->categories()->sync($data['categories']);
+            }
+
             return response()->json([
                 "message" => "Imóvel atualizado com sucesso",
                 "data"    => $realState
@@ -92,7 +103,7 @@ class RealStateController extends Controller
 
     /**
      * Remove the specified resource from storage.
-     * @param  \App\Models\RealState  $realState
+     * @param \App\Models\RealState $realState
      * @return \Illuminate\Http\JsonResponse
      */
     public function destroy($id)
