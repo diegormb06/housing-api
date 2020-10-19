@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\UserRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
@@ -45,9 +46,19 @@ class UserController extends Controller
             return response()->json($message->getMessage(), 404);
         }
 
+        Validator::make($data, [
+            'phone'           => 'required',
+            'mobile_phone'    => 'required',
+        ]);
+
         try {
             $data['password'] = bcrypt($data['password']);
             $newUser = $this->users->create($data);
+
+            $newUser->profile()->create([
+                'phone'           => $data['phone'],
+                'mobile_phone'    => $data['mobile_phone']
+            ]);
 
             return response()->json([
                 "message" => "User created",
@@ -67,7 +78,8 @@ class UserController extends Controller
     public function show(int $id)
     {
         try {
-            $user = $this->users->findOrFail($id);
+            $user = $this->users->with('profile')->findOrFail($id);
+            $user->profile->social_networks = unserialize($user->profile->social_networks);
             return response()->json([
                 "data" => $user
             ], 200);
@@ -86,6 +98,8 @@ class UserController extends Controller
     public function update(Request $request, int $id)
     {
         $data = $request->all();
+        $profile = $data['profile'];
+        $profile['social_networks'] = serialize($profile['social_networks']);
 
         if($request->has('password') && $request->get('password')) {
             $data['password'] = bcrypt($data['password']);
@@ -96,8 +110,10 @@ class UserController extends Controller
         try {
             $user = $this->users->findOrFail($id);
             $user->update($data);
+            $user->profile()->update($profile);
 
             return response()->json([
+                "message"=> "User updated",
                 "data" => $user
             ], 200);
         } catch (\exception $e) {

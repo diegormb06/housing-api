@@ -33,7 +33,7 @@ class Category extends Model
     use HasFactory;
     protected $fillable = ["name", "description", "slug"];
 
-    public function realState()
+    public function realStates()
     {
         return $this->belongsToMany(RealState::class, 'real_state_categories');
     }
