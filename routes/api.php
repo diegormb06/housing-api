@@ -19,17 +19,16 @@ use App\Http\Controllers\Api\UserController;
 |
 */
 
+Route::prefix('auth')->middleware('api')->group(function () {
+    Route::post('login', [AuthController::class,'login']);
+    Route::post('logout', [AuthController::class,'logout']);
+    Route::post('refresh', [AuthController::class,'refresh']);
+    Route::post('me', [AuthController::class,'me']);
+});
 
-Route::prefix('v1')->group(function () {
-    Route::group(['prefix' => 'auth'], function ($router) {
-        Route::post('login', [AuthController::class, 'login']);
-        Route::post('logout', [AuthController::class, 'logout']);
-        Route::post('refresh', [AuthController::class, 'refresh']);
-        Route::post('me', [AuthController::class, 'me']);
-    });
-
-    Route::resource('real-states', RealStateController::class);
+Route::prefix('v1')->middleware('auth:api')->group(function () {
     Route::resource('users', UserController::class);
+    Route::resource('real-states', RealStateController::class);
     Route::resource('category', CategoryController::class);
     Route::get('/category/{id}/real-states', [CategoryController::class, 'realStates']);
 
