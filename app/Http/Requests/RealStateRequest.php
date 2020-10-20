@@ -26,13 +26,9 @@ class RealStateRequest extends FormRequest
         return [
             "title"               => "required",
             "description"         => "required",
-            "content"             => "required",
             "price"               => "required",
-            "slug"                => "required",
             "bathrooms"           => "required",
             "bedrooms"            => "required",
-            "property_area"       => "required",
-            "total_property_area" => "required"
         ];
     }
 }

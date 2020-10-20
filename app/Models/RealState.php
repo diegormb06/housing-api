@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -23,7 +24,7 @@ use Illuminate\Support\Carbon;
  * @property string $slug
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * @property-read \App\Models\User $user
+ * @property-read User $user
  * @method static Builder|RealState newModelQuery()
  * @method static Builder|RealState newQuery()
  * @method static Builder|RealState query()
@@ -40,7 +41,7 @@ use Illuminate\Support\Carbon;
  * @method static Builder|RealState whereTotalPropertyArea($value)
  * @method static Builder|RealState whereUpdatedAt($value)
  * @method static Builder|RealState whereUserId($value)
- * @mixin \Eloquent
+ * @mixin Eloquent
  */
 class RealState extends Model
 {

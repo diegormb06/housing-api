@@ -6,6 +6,9 @@ use App\Api\ApiMessages;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\RealStateRequest;
 use App\Models\RealState;
+use exception;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class RealStateController extends Controller
 {
@@ -21,22 +24,23 @@ class RealStateController extends Controller
 
     /**
      * Display a listing of the Real States.
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function index()
     {
-        $realStates = $this->realState->paginate();
+        $realStates = $this->realState->with('images')->paginate();
         return response()->json($realStates, 200);
     }
 
     /**
      * Store a newly created resource in storage.
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @param RealStateRequest $request
+     * @return JsonResponse
      */
     public function store(RealStateRequest $request)
     {
         $data = $request->all();
+        $images = $request->file('images');
 
         try {
             $realState = $this->realState->create($data);
@@ -45,11 +49,22 @@ class RealStateController extends Controller
                 $realState->categories()->sync($data['categories']);
             }
 
+            if($images) {
+                $imagesUploaded = [];
+
+                foreach ($images as $image) {
+                    $imagePath = $image->store('images', 'public');
+                    $imagesUploaded[] = ["photo"=>$imagePath, "is_thumb"=>false];
+                }
+
+                $realState->images()->createMany($imagesUploaded);
+            }
+
             return response()->json([
                 "message" => "Imóvel cadastrado com sucesso",
                 "data"    => $realState
             ], 200);
-        } catch (\exception $e) {
+        } catch (exception $e) {
             $message = new ApiMessages($e->getMessage());
             return response()->json($message->getMessage(), 400);
         }
@@ -57,18 +72,18 @@ class RealStateController extends Controller
 
     /**
      * Display the specified resource.
-     * @param \App\Models\RealState $realState
-     * @return \Illuminate\Http\JsonResponse
+     * @param $id
+     * @return JsonResponse
      */
     public function show($id)
     {
         try {
-            $realState = $this->realState->findOrFail($id);
+            $realState = $this->realState->with('images')->findOrFail($id);
 
             return response()->json([
                 "data" => $realState
             ], 200);
-        } catch (\exception $e) {
+        } catch (exception $e) {
             $message = new ApiMessages($e->getMessage());
             return response()->json($message->getMessage(), 400);
         }
@@ -76,13 +91,15 @@ class RealStateController extends Controller
 
     /**
      * Update the specified resource in storage.
-     * @param \Illuminate\Http\Request $request
-     * @param \App\Models\RealState $realState
-     * @return \Illuminate\Http\JsonResponse
+     * @param int $id
+     * @param Request $request
+     * @return JsonResponse
      */
-    public function update($id, RealStateRequest $request)
+    public function update(int $id, Request $request)
     {
         $data = $request->all();
+        $images = $request->file('images');
+
         try {
             $realState = $this->realState->findOrFail($id);
             $realState->update($data);
@@ -91,11 +108,22 @@ class RealStateController extends Controller
                 $realState->categories()->sync($data['categories']);
             }
 
+            if($images) {
+                $imagesUploaded = [];
+
+                foreach ($images as $image) {
+                    $imagePath = $image->store('images', 'public');
+                    $imagesUploaded[] = ["photo"=>$imagePath, "is_thumb"=>false];
+                }
+
+                $realState->images()->createMany($imagesUploaded);
+            }
+
             return response()->json([
                 "message" => "Imóvel atualizado com sucesso",
                 "data"    => $realState
             ], 200);
-        } catch (\exception $e) {
+        } catch (exception $e) {
             $message = new ApiMessages($e->getMessage());
             return response()->json($message->getMessage(), 400);
         }
@@ -103,8 +131,8 @@ class RealStateController extends Controller
 
     /**
      * Remove the specified resource from storage.
-     * @param \App\Models\RealState $realState
-     * @return \Illuminate\Http\JsonResponse
+     * @param $id
+     * @return JsonResponse
      */
     public function destroy($id)
     {
@@ -115,7 +143,7 @@ class RealStateController extends Controller
             return response()->json([
                 "message" => "Imóvel excluído com sucesso",
             ], 200);
-        } catch (\exception $e) {
+        } catch (exception $e) {
             $message = new ApiMessages($e->getMessage());
             return response()->json($message->getMessage(), 400);
         }
