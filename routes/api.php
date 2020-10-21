@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\RealStateSearchController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CategoryController;
@@ -22,11 +23,12 @@ use App\Http\Controllers\Api\UserController;
 
 Route::prefix('v1')->middleware('auth:api')->group(function () {
     Route::prefix('auth')->group(function () {
-        Route::post('login', [AuthController::class,'login'])->withoutMiddleware('auth:api');
-        Route::post('logout', [AuthController::class,'logout']);
-        Route::post('refresh', [AuthController::class,'refresh']);
-        Route::post('me', [AuthController::class,'me']);
+        Route::post('login', [AuthController::class, 'login'])->withoutMiddleware('auth:api');
+        Route::post('logout', [AuthController::class, 'logout']);
+        Route::post('refresh', [AuthController::class, 'refresh']);
+        Route::post('me', [AuthController::class, 'me']);
     });
+
     Route::resource('users', UserController::class);
     Route::resource('real-states', RealStateController::class);
     Route::resource('category', CategoryController::class);
@@ -36,4 +38,6 @@ Route::prefix('v1')->middleware('auth:api')->group(function () {
         Route::delete('/{id}', [RealStateImageController::class, 'remove']);
         Route::put('/set-thumb/{imageId}/{realStateId}', [RealStateImageController::class, 'setThumb']);
     });
+
+    Route::get('search', [RealStateSearchController::class, 'index'])->withoutMiddleware('auth:api');
 });
