@@ -29,7 +29,6 @@ class RealStateSearchController extends Controller
      */
     public function index(Request $request)
     {
-//        $realState = $this->realState->paginate(10);
         $repository = new RealStateRepository($this->realState);
 
         if($request->has('conditions')) {
@@ -50,9 +49,9 @@ class RealStateSearchController extends Controller
      * Display the specified resource.
      *
      * @param int $id
-     * @return JsonResponse
+     * @return void
      */
-    public function show($id)
+    public function show(int $id)
     {
         //
     }

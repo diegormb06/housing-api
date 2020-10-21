@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AlterTableRealstateAddAddressId extends Migration
+class AlterTableRealStateAddAddressId extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class AlterTableRealstateAddAddressId extends Migration
      */
     public function up()
     {
-        Schema::table('real_state', function (Blueprint $table) {
-            $table->foreignId('address_id')->constrained('address');
+        Schema::table('real_states', function (Blueprint $table) {
+            $table->foreignId('address_id')->constrained('addresses');
         });
     }
 

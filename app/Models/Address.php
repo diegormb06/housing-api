@@ -18,4 +18,9 @@ class Address extends Model
     {
         return $this->belongsTo(City::class);
     }
+
+    public function realStates()
+    {
+        return $this->hasOne(RealState::class);
+    }
 }
