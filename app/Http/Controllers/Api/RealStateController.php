@@ -28,7 +28,7 @@ class RealStateController extends Controller
      */
     public function index()
     {
-        $realStates = $this->realState->with('images')->paginate();
+        $realStates = auth()->user()->real_state()->with('images')->paginate();
         return response()->json($realStates, 200);
     }
 
