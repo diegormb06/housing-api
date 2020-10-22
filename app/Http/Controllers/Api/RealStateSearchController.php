@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Api\ApiMessages;
 use App\Http\Controllers\Controller;
 use App\Models\RealState;
 use App\Repository\RealStateRepository;
+use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -39,6 +41,8 @@ class RealStateSearchController extends Controller
             $repository->selectFilter($request->get('fields'));
         }
 
+        $repository->setLocation($request->only(['state', 'city']));
+
         return response()->json([
             "data" => $repository->getResult()->paginate(10),
         ], 200);
@@ -49,10 +53,19 @@ class RealStateSearchController extends Controller
      * Display the specified resource.
      *
      * @param int $id
-     * @return void
+     * @return JsonResponse
      */
     public function show(int $id)
     {
-        //
+        try {
+            $realState = $this->realState->with('address')->with('images')->findOrFail($id);
+
+            return response()->json([
+                "data"    => $realState
+            ], 200);
+        } catch(exception $e) {
+            $message = new ApiMessages($e->getMessage());
+            return response()->json($message->getMessage(), 400);
+        }
     }
 }

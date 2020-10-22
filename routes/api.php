@@ -40,4 +40,5 @@ Route::prefix('v1')->middleware('auth:api')->group(function () {
     });
 
     Route::get('search', [RealStateSearchController::class, 'index'])->withoutMiddleware('auth:api');
+    Route::get('search/{id}', [RealStateSearchController::class, 'show'])->withoutMiddleware('auth:api');
 });

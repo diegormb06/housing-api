@@ -11,7 +11,7 @@ abstract class AbstractRepository
     /**
      * @var Model
      */
-    private $model;
+    protected $model;
 
     public function __construct(Model $model)
     {
@@ -20,11 +20,13 @@ abstract class AbstractRepository
 
     public function selectFilter($fields)
     {
-        return $this->model->selectRaw($fields);
+        print($fields);
+        $this->model = $this->model->selectRaw($fields);
     }
 
     public function selectConditions($conditions)
     {
+        print_r($conditions);
         $expressions = explode(';', $conditions);
         foreach ($expressions as $e) {
             $exp = explode(':', $e);
